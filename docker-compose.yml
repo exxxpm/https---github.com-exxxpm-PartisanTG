@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  php:
+    image: yiisoftware/yii2-php:8.2-apache
+    container_name: PartisanTG
+    volumes:
+      - ~/.composer-docker/cache:/root/.composer/cache:delegated
+      - ./:/app:delegated
+    ports:
+      - '8081:80'
+    depends_on:
+      - mysql
+    environment:
+      - YII_ENV=dev
+      - YII_DEBUG=1
+
+  mysql:
+    image: mysql:8
+    container_name: PartisanTG_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: partisan_tg
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: partisan_Admin
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: PartisanTG_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - '8080:80'
+
+volumes:
+  mysql_data:
